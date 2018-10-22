@@ -1,0 +1,21 @@
+---
+
+#Options available for installation source|rpm|tarball
+java_install_method: tarball
+
+#Other options available openjdk|oracle
+java_vendor: oracle
+
+java_install_prefix: /meetools/java
+
+#Download files to temp directory
+java_download_path: /tmp
+
+#List the openjdk package names
+java_openjdk_packages:
+ 
+#List the package names for oracle java
+java_oracle_packages: 
+
+java_oracle_download_url: "http://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-x64.tar.gz"
+

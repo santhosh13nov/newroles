@@ -1,0 +1,4 @@
+---
+# tasks file for truedeploy-openjdk
+- name: install openjdk
+  yum: name=java state=present update_cache=yes

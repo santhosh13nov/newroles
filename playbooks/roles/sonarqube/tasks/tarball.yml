@@ -1,0 +1,34 @@
+---
+- name: set facts for sonarqube
+  set_fact: 
+    sonarqube_home: "{{ sonarqube_install_prefix}}"
+    sonarqube_tmp_path: "{{ sonarqube_download_path }}/{{ sonarqube_download_url | basename }}"
+   
+
+- name: get JDK tarball (as zip file)
+  get_url:
+    url: "{{sonarqube_download_url}}"
+    dest: "{{sonarqube_tmp_path }}"
+  when: sonarqube_install_method == 'tarball'
+
+
+- name: create directory
+  file: path="{{sonarqube_home}}" mode=755 state=directory recurse=yes
+
+- name: copy sonarqube binaries 
+  unarchive: src={{sonarqube_tmp_path}} dest={{sonarqube_home}} creates="{{sonarqube_home}}/bin/sonarqube" remote_src=yes
+
+
+- name: Test for line
+  shell: grep "SONAR_HOME" ~/.bash_profile
+  register: sonarqube_home_found
+  ignore_errors: true
+
+- name: Find and replace
+  lineinfile:
+    path: ~/.bash_profile
+    regexp: "^export SONAR_HOME"
+    line: "export SONAR_HOME={{ sonarqube_home }}"
+#    backrefs: yes
+    state: present
+  when: sonarqube_home_found.rc >= 0

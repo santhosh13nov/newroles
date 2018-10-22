@@ -1,0 +1,7 @@
+---
+# defaults file for sonarqube
+
+sonarqube_install_method: tarball
+sonarqube_install_prefix: /meetools/sonarqube
+sonarqube_download_path: /tmp
+sonarqube_download_url: "https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.0.zip"

@@ -1,0 +1,31 @@
+---
+- name: set fact java_home
+  set_fact: 
+    java_home: "{{ java_install_prefix}}/java-1.8"
+    java_active: "{{java_install_prefix}}/live"
+    java_tmp_path: "{{ java_download_path }}/{{ java_oracle_download_url | basename }}.tar.gz"
+   
+- name: include tasks based on the installation type
+  include_tasks: "{{ java_vendor }}.yml"
+
+# Environment setup for all users.
+#- name: Set JAVA_HOME if configured.
+#  template:
+#    src: java_home.sh.j2
+#    dest: /etc/profile.d/java_home.sh
+#    mode: 0644
+#  when: java_active is defined and java_active != ''
+
+- name: Test for line
+  shell: grep "JAVA_HOME" ~/.bash_profile
+  register: java_home_found
+  ignore_errors: true
+
+- name: Find and replace
+  lineinfile:
+    path: ~/.bash_profile
+    regexp: "^export JAVA_HOME"
+    line: "export JAVA_HOME={{ java_active }}"
+#    backrefs: yes
+    state: present
+  when: java_home_found.rc >= 0

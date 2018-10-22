@@ -1,0 +1,27 @@
+---
+- name: set facts
+  set_fact:
+    jenkins_war_path: "{{jenkins_war_home}}/war/jenkins.war"
+    jenkins_log_path: "{{jenkins_war_home}}/{{jenkins_log_file}}"
+    jenkins_webroot: "{{jenkins_war_home}}/cache/war"
+    jenkins_pidfile: "{{jenkins_war_home}}/jenkins.pid"
+
+- name: create jenkins war directory
+  file: path={{jenkins_war_path |dirname }} state=directory recurse=yes mode=755
+  
+- name: download war file
+  get_url: url={{ jenkins_war_download_url }} dest={{ jenkins_war_path }}
+
+- name: Make sure jenkins is running before proceeding.
+  wait_for: host={{ jenkins_http_address }} port={{ jenkins_http_port }} delay=0 timeout=5 msg="Jenkins is not listening"
+  register: jenkins_running
+  ignore_errors: yes
+
+- name: start jenkins process
+  shell: "nohup /meetools/java/live/bin/java -Djava.awt.headless=true -Xmx4096m  -DJENKINS_HOME={{jenkins_war_home}} -jar {{jenkins_war_path}} --logfile={{jenkins_log_path }} --webroot={{jenkins_webroot}} --httpPort={{jenkins_http_port}} --httpListenAddress={{jenkins_http_address}} --debug=5 --handlerCountMax=100 --handlerCountMaxIdle=20 &"
+  when: jenkins_running is failed
+  register: jenkins_started
+
+- name: Make sure jenkins is running before proceeding.
+  wait_for: host={{ jenkins_http_address }} port={{ jenkins_http_port }} delay=3 timeout=30 msg="Unable to see jenkins is running"
+

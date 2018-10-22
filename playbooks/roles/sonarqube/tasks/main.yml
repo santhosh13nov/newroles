@@ -1,0 +1,3 @@
+---
+- name: include tasks
+  include_tasks: "{{ sonarqube_install_method }}.yml"

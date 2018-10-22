@@ -1,0 +1,38 @@
+---
+- name: set facts for node
+  set_fact: 
+    node_home: "{{ node_install_prefix}}/node-10.12.0"
+    node_active: "{{node_install_prefix}}/live"
+    node_tmp_path: "{{ node_download_path }}/{{ node_download_url | basename }}.tar.gz"
+   
+
+- name: get JDK tarball (as tar.gz file)
+  get_url:
+    url:     "{{node_download_url}}"
+    dest:    "{{node_tmp_path }}"
+  when: node_install_method == 'tarball'
+
+
+- name: create directory
+  file: path="{{node_home}}" mode=755 state=directory recurse=yes
+
+- name: create sym links
+  file: path="{{node_active}}" src={{node_home}} state=link
+ 
+- name: copy node binaries 
+  unarchive: src={{node_tmp_path}} dest={{node_home}} creates="{{node_home}}/bin/node" remote_src=yes extra_opts='--strip-components=1'
+
+
+- name: Test for line
+  shell: grep "NODE_HOME" ~/.bash_profile
+  register: node_home_found
+  ignore_errors: true
+
+- name: Find and replace
+  lineinfile:
+    path: ~/.bash_profile
+    regexp: "^export NODE_HOME"
+    line: "export NODE_HOME={{ node_active }}"
+#    backrefs: yes
+    state: present
+  when: node_home_found.rc >= 0

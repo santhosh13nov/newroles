@@ -1,0 +1,32 @@
+---
+
+- name: get JDK tarball (as tar.gz file)
+  get_url:
+    url:     "{{maven_download_url}}"
+    dest:    "{{maven_tmp_path }}"
+  when: maven_install_method == 'tarball'
+
+
+- name: create directory
+  file: path="{{maven_home}}" mode=755 state=directory recurse=yes
+
+- name: create sym links
+  file: path="{{maven_active}}" src={{maven_home}} state=link
+ 
+- name: copy maven binaries 
+  unarchive: src={{maven_tmp_path}} dest={{maven_home}} creates="{{maven_home}}/bin/maven" remote_src=yes extra_opts='--strip-components=1'
+
+
+- name: Test for line
+  shell: grep "MAVEN_HOME" ~/.bash_profile
+  register: maven_home_found
+  ignore_errors: true
+
+- name: Find and replace
+  lineinfile:
+    path: ~/.bash_profile
+    regexp: "^export MAVEN_HOME"
+    line: "export MAVEN_HOME={{ maven_active }}"
+#    backrefs: yes
+    state: present
+  when: maven_home_found.rc >= 0

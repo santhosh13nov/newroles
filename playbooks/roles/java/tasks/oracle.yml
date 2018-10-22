@@ -1,0 +1,20 @@
+---
+# tasks file
+
+- name: get JDK tarball (as tar.gz file)
+  get_url:
+    url:     "{{java_oracle_download_url}}"
+    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    dest:    "{{java_tmp_path }}"
+  when: java_install_method == 'tarball'
+
+
+- name: create directory
+  file: path="{{java_home}}" mode=755 state=directory recurse=yes
+
+- name: create sym links
+  file: path="{{java_active}}" src={{java_home}} state=link
+ 
+- name: copy java binaries 
+  unarchive: src={{java_tmp_path}} dest={{java_home}} creates="{{java_home}}/bin/java" remote_src=yes extra_opts='--strip-components=1'
+

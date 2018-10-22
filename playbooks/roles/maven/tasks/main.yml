@@ -1,0 +1,11 @@
+---
+# tasks file for maven
+- name: set facts
+  set_fact:
+    maven_home: "{{ maven_install_prefix}}/maven-3.5.4"
+    maven_active: "{{maven_install_prefix}}/live"
+    maven_tmp_path: "{{ maven_download_path }}/{{ maven_download_url | basename }}.tar.gz"
+    
+- name: include tasks 
+  include_tasks: "{{maven_install_method}}.yml"
+

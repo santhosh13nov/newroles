@@ -1,0 +1,12 @@
+---
+# defaults file for jenkins
+
+jenkins_install_method: war
+jenkins_war_download_url: "http://mirrors.jenkins.io/war-stable/2.138.2/jenkins.war"
+jenkins_war_home: /meetools/jenkins
+
+jenkins_http_port: 8080
+jenkins_http_address: 0.0.0.0
+jenkins_xmx: 4096m
+jenkins_log_file: jenkins.log
+

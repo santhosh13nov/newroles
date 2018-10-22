@@ -1,0 +1,8 @@
+---
+- hosts: node6
+  roles:
+    - java
+    - maven
+    - jenkins
+    - sonarqube
+    - node

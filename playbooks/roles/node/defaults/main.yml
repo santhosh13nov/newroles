@@ -1,0 +1,11 @@
+---
+
+#Options available for installation source|rpm|tarball
+node_install_method: tarball
+
+node_install_prefix: /meetools/node
+
+#Download files to temp directory
+node_download_path: /tmp
+
+node_download_url: "https://nodejs.org/dist/v10.12.0/node-v10.12.0-linux-x64.tar.xz"

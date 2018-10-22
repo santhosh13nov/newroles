@@ -1,0 +1,7 @@
+---
+# defaults file for maven
+# Supports source|package|tarball
+maven_install_method: tarball
+maven_install_prefix: /meetools/maven
+maven_download_path: /tmp
+maven_download_url: "http://mirrors.fibergrid.in/apache/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz"

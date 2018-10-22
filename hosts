@@ -1,0 +1,7 @@
+[dev]
+node6 ansible_host=
+
+[dev:vars]
+ansible_connection=ssh 
+ansible_user=r
+ansible_ssh_pass=
