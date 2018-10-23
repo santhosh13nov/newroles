@@ -1,0 +1,13 @@
+---
+
+- name: download gradle
+  get_url: url={{gradle_download_url}} dest={{gradle_download_path}}
+  register: gradle_download
+
+- name: creating gradle home directory {{ gradle_install_prefix }}
+  file: path={{ gradle_install_prefix }} state=directory mode=0755
+
+- name: extract gradle to {{ gradle_install_prefix }}
+  unarchive: src={{ gradle_download_path }} dest={{ gradle_install_prefix }} remote_src=yes  creates="{{ gradle_install_prefix }}/gradle-{{gradle_version}}/bin/gradle"
+
+

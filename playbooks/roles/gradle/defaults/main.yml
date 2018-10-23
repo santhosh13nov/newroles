@@ -1,0 +1,14 @@
+---
+# defaults file for gradle
+
+gradle_install_method: tarball
+gradle_install_prefix: /meetools/gradle
+gradle_version: 4.10.2
+
+
+gradle_download_url: "https://downloads.gradle.org/distributions/gradle-{{ gradle_version }}-bin.zip"
+gradle_tmp_path: /tmp
+gradle_bin_file_name: "{{ gradle_download_url | basename }}"
+gradle_download_path: "/tmp/{{ gradle_bin_file_name }}"
+
+

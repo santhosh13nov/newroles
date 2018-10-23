@@ -1,0 +1,36 @@
+---
+- name: create nexus service group
+  group: name={{ nexus_service_group }}
+
+- name: create nexus service user
+  user: name={{ nexus_service_user }} group={{ nexus_service_group }}
+
+- name: download nexus
+  get_url: url={{nexus_download_url}} dest={{nexus_download_path}}
+  register: nexus_download
+
+- name: creating nexus home directory {{ nexus_install_prefix }}
+  file: path={{ nexus_install_prefix }} state=directory mode=0755
+
+- name: extract nexus to {{ nexus_install_prefix }}
+  unarchive: src={{ nexus_download_path }} dest={{ nexus_install_prefix }} remote_src=yes group={{ nexus_service_group }} owner={{nexus_service_user}} creates="{{ nexus_install_prefix }}/bin/nexus" extra_opts='--strip-components=1' 
+
+- name: update jvm settings
+  template: src=wrapper.conf.j2 dest="{{ nexus_install_prefix }}/bin/jsw/conf/wrapper.conf" 
+  notify: restart nexus
+
+- name: make nexus runnable by {{ nexus_service_user }} user
+  lineinfile: dest={{ nexus_install_prefix }}/bin/nexus regexp="^#RUN_AS_USER=" line="RUN_AS_USER={{nexus_service_user}}" backrefs=true
+  notify: restart nexus
+
+#- name: create symbolic links to /etc/init.d/nexus
+#  file: src={{ nexus_install_prefix }}/nexus-{{ nexus_version }}/bin/nexus dest=/etc/init.d/nexus state=link owner=nexus
+#
+#- name: start nexus
+#  service: name=nexus state=started pattern={{ nexus_install_prefix }}
+#  become_user: nexus
+
+#- name: start nexus
+#  service: name=nexus state=restarted pattern={{ nexus_install_prefix }}
+#  become_user: nexus
+

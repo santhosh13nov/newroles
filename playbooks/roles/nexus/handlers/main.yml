@@ -1,0 +1,8 @@
+---
+# handlers file for nexus
+
+- name: start nexus
+  shell: "{{nexus_install_prefix}}/bin/nexus start"
+
+- name: restart nexus
+  shell: "{{nexus_install_prefix}}/bin/nexus restart"
